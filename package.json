@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc --watch",
-    "start": "node ./build/index.js",
-    "dev": "nodemon ./build/index.js"
+    "tsc-watch": "tsc --watch",
+    "start": "node build/index.js",
+    "dev": "nodemon ./build/index.js",
+    "postinstall": "tsc"
   },
   "keywords": [],
   "author": "",
