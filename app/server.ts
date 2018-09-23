@@ -10,7 +10,7 @@ import { IMessage } from './models/IMessage';
 
 export class ChatServer {
     private app: express.Application;
-    public static PORT = process.env.PORT;
+    public static PORT = process.env.PORT || 3010;
     private io: SocketIO.Server | undefined;
     private server: Server = new Server;
     public users = {} as any;
