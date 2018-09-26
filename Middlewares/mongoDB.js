@@ -7,7 +7,10 @@ exports.connectMongoDb = (req, res, next) => {
         return next();
     };
     mongoose.Promise = global.Promise;
-    mongoose.connect(url, { useNewUrlParser: true });
+    mongoose.connect(url, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+    });
     const db = mongoose.connection;
     db.on('error', (error) => {
         next(error);

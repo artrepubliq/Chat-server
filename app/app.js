@@ -5,12 +5,14 @@ const bodyParser = require('body-parser');
 const { connectMongoDb } = require('../Middlewares/mongoDB');
 const handleErrors = require('../Middlewares/handleErrors');
 const { userRouter } = require('../Controllers/users')
+require('dotenv').config();
+const cors = require('cors');
+
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-require('dotenv').config();
+
 const server = http.createServer(app);
-
-
 app.get('/', connectMongoDb, (req, res) => {
     res.send({ status: true, });
 });
