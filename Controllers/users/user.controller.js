@@ -6,6 +6,6 @@ module.exports = {
      */
     getUsers: async (req, res, next) => {
         const userData = await usersModel.find({})
-        res.send(userData);
+        res.status(200).json({ result: userData, error: false });
     }
 }
