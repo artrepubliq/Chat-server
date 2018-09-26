@@ -2,8 +2,9 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const bodyParser = require('body-parser');
-const connectMongoDb = require('../Middlewares/mongoDB').connectMongoDb;
-const handleErrors = require('../Middlewares/handleErrors')
+const { connectMongoDb } = require('../Middlewares/mongoDB');
+const handleErrors = require('../Middlewares/handleErrors');
+const { userRouter } = require('../Controllers/users')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 require('dotenv').config();
@@ -11,14 +12,10 @@ const server = http.createServer(app);
 
 
 app.get('/', connectMongoDb, (req, res) => {
-    console.log('im requested');
-    res.send({ hi: 'hi' });
+    res.send({ status: true, });
 });
 
-app.post('/hi', (req, res) => {
-    console.log(req.body);
-    res.send({ data: req.body })
-});
+app.use('/users', connectMongoDb, userRouter)
 
 app.use(handleErrors.handleError);
 const io = require('socket.io')(server);
