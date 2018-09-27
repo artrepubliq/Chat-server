@@ -18,20 +18,13 @@ app.get('/', connectMongoDb, (req, res) => {
 });
 
 app.use('/users', connectMongoDb, userRouter)
-
 app.use(handleErrors.handleError);
 const io = require('socket.io')(server);
+let clients = {};
 let users = {};
-io.of('/chat').on('connection', (socket) => {
-    socket.on('newMessage', (data) => {
-        console.log(`new message recieved from the user ${data.user_name}: ${data.message} `)
-        socket.broadcast.emit('newMessage', data);
-    });
-
-
-});
 
 io.of('privatechat').on('connection', socket => {
+
     console.log('private chat');
     updateNickNames = () => {
         io.of('privatechat').emit('usernames', Object.keys(users));
@@ -39,6 +32,44 @@ io.of('privatechat').on('connection', socket => {
     /**
      * this is to add a new user and emit to every user who is listening in private chat namespace
      */
+
+    updateClients = (client_id, user_socket) => {
+        console.log(clients, 37);
+        console.log(client_id);
+        console.log(user_socket)
+    }
+    socket.on('user_login', (userData) => {
+        let user = {};
+        user.client_id = socket.handshake.query.client_id;
+        user.user_name = userData.user_name;
+        user.user_id = userData.user_id;
+        user.user_socket = socket;
+        users[`${userData._id}_${socket.handshake.query.client_id}`] = user;
+        user = {};
+        // clients[`${socket.handshake.query.client_id}`] = { ...users }
+        updateClients(socket.handshake.query.client_id, users);
+        console.log(clients, 43);
+        // clients[socket.handshake.query.client_id] = socket.handshake.query.client_id;
+        // users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
+        // users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
+        // clients[socket.handshake.query.client_id] = users;
+
+        socket.join(socket.handshake.query.client_id, () => {
+            socket.broadcast.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) });
+            // io.sockets.to(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) });
+            // io.socket.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) })
+        });
+        // io.sockets.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) })
+    });
+
+
+
+
+
+
+
+
+    /********************************* SOCKET R&D ************************************/
     socket.on('new user', data => {
         console.log(data);
         if (data in users) {
