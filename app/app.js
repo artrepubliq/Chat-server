@@ -34,32 +34,26 @@ io.of('privatechat').on('connection', socket => {
      */
 
     updateClients = (client_id, user_socket) => {
-        console.log(clients, 37);
-        console.log(client_id);
-        console.log(user_socket)
+        if (Object.keys(clients).length === 0) {
+            clients[client_id] = {...user_socket}
+        } else {
+            console.log('im not empty');
+            clients[client_id] = {...clients[client_id], ...user_socket}
+        }
     }
     socket.on('user_login', (userData) => {
-        let user = {};
-        user.client_id = socket.handshake.query.client_id;
-        user.user_name = userData.user_name;
-        user.user_id = userData.user_id;
-        user.user_socket = socket;
-        users[`${userData._id}_${socket.handshake.query.client_id}`] = user;
-        user = {};
-        // clients[`${socket.handshake.query.client_id}`] = { ...users }
+
+        let users = {}
+        socket.client_id = socket.handshake.query.client_id;
+        socket.user_name = userData.user_name;
+        socket.user_id = userData.user_id;
+        users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
+
         updateClients(socket.handshake.query.client_id, users);
-        console.log(clients, 43);
-        // clients[socket.handshake.query.client_id] = socket.handshake.query.client_id;
-        // users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
-        // users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
-        // clients[socket.handshake.query.client_id] = users;
 
         socket.join(socket.handshake.query.client_id, () => {
-            socket.broadcast.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) });
-            // io.sockets.to(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) });
-            // io.socket.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) })
+            socket.broadcast.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) }); 
         });
-        // io.sockets.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) })
     });
 
 
