@@ -35,10 +35,10 @@ io.of('privatechat').on('connection', socket => {
 
     updateClients = (client_id, user_socket) => {
         if (Object.keys(clients).length === 0) {
-            clients[client_id] = {...user_socket}
+            clients[client_id] = { ...user_socket }
         } else {
             console.log('im not empty');
-            clients[client_id] = {...clients[client_id], ...user_socket}
+            clients[client_id] = { ...clients[client_id], ...user_socket }
         }
     }
     socket.on('user_login', (userData) => {
@@ -52,7 +52,13 @@ io.of('privatechat').on('connection', socket => {
         updateClients(socket.handshake.query.client_id, users);
 
         socket.join(socket.handshake.query.client_id, () => {
-            socket.broadcast.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) }); 
+            let user_ids = [];
+            Object.keys(clients[socket.handshake.query.client_id]).map(user_socket => {
+                let user_id = clients[socket.handshake.query.client_id][user_socket].user_id;
+                let socket_key = user_socket;
+                user_ids = [...user_ids, { user_id, socket_key }];
+            });
+            io.of('privatechat').to(socket.handshake.query.client_id).emit('new_users', { logged_in_users: user_ids });
         });
     });
 
