@@ -8,3 +8,11 @@
 exports.handleError = (err, req, res, next) => {
     res.status(500).json({ status: false, error: err });
 }
+
+exports.responeseTime = (req, res, next) => {
+    const localTime = new Date().getTime();
+    next();
+    res.on('finish', () => {
+        console.log(`${req.method} ${req.originalUrl} ${(new Date().getTime() - localTime) / 1000} --sec`);
+    });
+}

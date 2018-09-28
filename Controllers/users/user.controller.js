@@ -1,11 +1,16 @@
-const { usersModel } = require('../../schema/users/users')
+const { usersModel } = require('../../schema/users/users');
+const { handleError } = require('../../Middlewares/handleErrors')
 
 module.exports = {
     /**
      * this is to get the list of users
      */
     getUsers: async (req, res, next) => {
-        const userData = await usersModel.find({})
-        res.status(200).json({ result: userData, error: false });
+        try {
+            const userData = await usersModel.find({});
+            res.status(200).json({ result: userData, error: false });
+        } catch (error) {
+            handleError(error);
+        }
     }
 }

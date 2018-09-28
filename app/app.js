@@ -4,9 +4,12 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const { connectMongoDb } = require('../Middlewares/mongoDB');
 const handleErrors = require('../Middlewares/handleErrors');
-const { userRouter } = require('../Controllers/users')
 require('dotenv').config();
 const cors = require('cors');
+
+const { userRouter } = require('../Controllers/users');
+const { conversationController } = require('../Controllers/conversation/conversation.controller');
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -17,51 +20,96 @@ app.get('/', connectMongoDb, (req, res) => {
     res.send({ status: true, });
 });
 
+app.use(handleErrors.responeseTime);
 app.use('/users', connectMongoDb, userRouter)
 app.use(handleErrors.handleError);
 const io = require('socket.io')(server);
 let clients = {};
 let users = {};
 
+/**
+ * @param privatechat is the namespace for single user chat.
+ * @param client_id takes client id from the query string.
+ */
 io.of('privatechat').on('connection', socket => {
-
-    console.log('private chat');
+    console.log(`private chat users/sockets connected : ${Object.keys(io.sockets.connected).length}`);
     updateNickNames = () => {
         io.of('privatechat').emit('usernames', Object.keys(users));
     }
-    /**
-     * this is to add a new user and emit to every user who is listening in private chat namespace
-     */
 
-    updateClients = (client_id, user_socket) => {
-        console.log(clients, 37);
-        console.log(client_id);
-        console.log(user_socket)
+    updateClientUsers = (client_id) => {
+        let user_ids = [];
+        Object.keys(clients[client_id]).map(user_socket => {
+            let user_id = clients[client_id][user_socket].user_id;
+            let socket_key = user_socket;
+            user_ids = [...user_ids, { user_id, socket_key }];
+        });
+        io.of('privatechat').to(client_id).emit('new_users', { logged_in_users: user_ids });
     }
+    /**
+     * this is to add a new user and emit to every user who is listening in private chat namespace.
+     * @param client_id takes client_id as key to certain client sockets.
+     * @param user_socket takes user socket object, that will be nested inside the client object.
+     */
+    updateClients = (client_id, user_socket) => {
+        if (Object.keys(clients).length === 0) {
+            clients[client_id] = { ...user_socket }
+        } else {
+            clients[client_id] = { ...clients[client_id], ...user_socket }
+        }
+    }
+    /**
+     * this listens on new user_login event occured
+     * @param user_login
+     */
     socket.on('user_login', (userData) => {
-        let user = {};
-        user.client_id = socket.handshake.query.client_id;
-        user.user_name = userData.user_name;
-        user.user_id = userData.user_id;
-        user.user_socket = socket;
-        users[`${userData._id}_${socket.handshake.query.client_id}`] = user;
-        user = {};
-        // clients[`${socket.handshake.query.client_id}`] = { ...users }
+        let users = {}
+        socket.client_id = socket.handshake.query.client_id;
+        socket.user_name = userData.user_name;
+        socket.user_id = userData.user_id;
+        users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
+
         updateClients(socket.handshake.query.client_id, users);
-        console.log(clients, 43);
-        // clients[socket.handshake.query.client_id] = socket.handshake.query.client_id;
-        // users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
-        // users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
-        // clients[socket.handshake.query.client_id] = users;
 
         socket.join(socket.handshake.query.client_id, () => {
-            socket.broadcast.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) });
-            // io.sockets.to(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) });
-            // io.socket.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) })
+            updateClientUsers(socket.handshake.query.client_id);
+            // let user_ids = [];
+            // Object.keys(clients[socket.handshake.query.client_id]).map(user_socket => {
+            //     let user_id = clients[socket.handshake.query.client_id][user_socket].user_id;
+            //     let socket_key = user_socket;
+            //     user_ids = [...user_ids, { user_id, socket_key }];
+            // });
+            // io.of('privatechat').to(socket.handshake.query.client_id).emit('new_users', { logged_in_users: user_ids });
         });
-        // io.sockets.in(socket.handshake.query.client_id).emit('new_users', { logged_in_users: Object.keys(users) })
     });
 
+    /**
+     * this listens on new Message
+     * @param send_new_message
+     */
+    socket.on('send_new_message', async (messageData) => {
+        if (clients[socket.handshake.query.client_id] &&
+            clients[socket.handshake.query.client_id][messageData.socket_key]) {
+            // const result = await conversationController.insertNewMessage(messageData, socket.handshake.query.client_id);
+            clients[socket.handshake.query.client_id][messageData.socket_key].emit('receive_new_message', messageData);
+        } else {
+            return;
+        }
+    });
+
+    /**
+     * @param disconnect_private_chat_socket triggs when user wants to disconnect the connection
+     */
+    socket.on('disconnect_private_chat_socket', (socketData) => {
+        console.log(socketData.socket_key, 96);
+        if (clients[socket.handshake.query.client_id][socketData.socket_key]) {
+            delete clients[socket.handshake.query.client_id][socketData.socket_key];
+            updateClientUsers(socket.handshake.query.client_id);
+        } else {
+            return;
+        }
+
+    })
 
 
 
