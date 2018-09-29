@@ -16,13 +16,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const server = http.createServer(app);
-app.get('/', connectMongoDb, (req, res) => {
+app.get('/', (req, res) => {
     res.send({ status: true, });
 });
 
 app.use(handleErrors.responeseTime);
 app.use('/users', connectMongoDb, userRouter)
-app.use(handleErrors.handleError);
+app.use('/conversations', connectMongoDb, conversationController.readMessageThreads)
 const io = require('socket.io')(server);
 let clients = {};
 let users = {};
@@ -46,6 +46,7 @@ io.of('privatechat').on('connection', socket => {
         });
         io.of('privatechat').to(client_id).emit('new_users', { logged_in_users: user_ids });
     }
+
     /**
      * this is to add a new user and emit to every user who is listening in private chat namespace.
      * @param client_id takes client_id as key to certain client sockets.
@@ -58,6 +59,7 @@ io.of('privatechat').on('connection', socket => {
             clients[client_id] = { ...clients[client_id], ...user_socket }
         }
     }
+
     /**
      * this listens on new user_login event occured
      * @param user_login
@@ -68,18 +70,9 @@ io.of('privatechat').on('connection', socket => {
         socket.user_name = userData.user_name;
         socket.user_id = userData.user_id;
         users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
-
         updateClients(socket.handshake.query.client_id, users);
-
         socket.join(socket.handshake.query.client_id, () => {
             updateClientUsers(socket.handshake.query.client_id);
-            // let user_ids = [];
-            // Object.keys(clients[socket.handshake.query.client_id]).map(user_socket => {
-            //     let user_id = clients[socket.handshake.query.client_id][user_socket].user_id;
-            //     let socket_key = user_socket;
-            //     user_ids = [...user_ids, { user_id, socket_key }];
-            // });
-            // io.of('privatechat').to(socket.handshake.query.client_id).emit('new_users', { logged_in_users: user_ids });
         });
     });
 
@@ -88,12 +81,17 @@ io.of('privatechat').on('connection', socket => {
      * @param send_new_message
      */
     socket.on('send_new_message', async (messageData) => {
-        if (clients[socket.handshake.query.client_id] &&
-            clients[socket.handshake.query.client_id][messageData.socket_key]) {
-            // const result = await conversationController.insertNewMessage(messageData, socket.handshake.query.client_id);
-            clients[socket.handshake.query.client_id][messageData.socket_key].emit('receive_new_message', messageData);
-        } else {
-            return;
+        try {
+            if (clients[socket.handshake.query.client_id] &&
+                clients[socket.handshake.query.client_id][messageData.socket_key]) {
+                const result = await conversationController.insertNewMessage(messageData, socket.handshake.query.client_id);
+                clients[socket.handshake.query.client_id][messageData.socket_key].emit('receive_new_message', messageData);
+            } else {
+                return;
+            }
+        }
+        catch (error) {
+            console.log(error)
         }
     });
 
@@ -156,10 +154,8 @@ io.of('groupchat').on('connection', (socket) => {
     });
 
 });
-
-app.use((req, res) => {
-    res.status(404).send({ status: 404, data: 'URL not found' });
-});
+app.use(handleErrors.handleError);
+app.use(handleErrors.handle404Error);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {

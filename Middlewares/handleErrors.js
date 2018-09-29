@@ -4,11 +4,27 @@
  * @param {*} req http request object
  * @param {*} res http response object
  * @param {*} next http next function that needs to be executed 
+ * handles internal server errors
  */
 exports.handleError = (err, req, res, next) => {
     res.status(500).json({ status: false, error: err });
 }
-
+/**
+ * 
+ * @param {*} req http request object
+ * @param {*} res http response object
+ * Handles 404 page not found error
+ */
+exports.handle404Error = (req, res) => {
+    res.status(404).send({ status: 404, data: 'URL not found' });
+}
+/**
+ * 
+ * @param {*} req http request object
+ * @param {*} res http response object
+ * @param {*} next 
+ * this logs the http request methods and the response time in console
+ */
 exports.responeseTime = (req, res, next) => {
     const localTime = new Date().getTime();
     next();
