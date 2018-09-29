@@ -8,8 +8,8 @@ require('dotenv').config();
 const cors = require('cors');
 
 const { userRouter } = require('../Controllers/users');
-const { conversationController } = require('../Controllers/conversation/conversation.controller');
-
+const { conversationSocketController } = require('../Controllers/conversation/conversation.controller.socket');
+const { conversationsRouter } = require('../Controllers/conversation');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -22,7 +22,8 @@ app.get('/', (req, res) => {
 
 app.use(handleErrors.responeseTime);
 app.use('/users', connectMongoDb, userRouter)
-app.use('/conversations', connectMongoDb, conversationController.readMessageThreads)
+app.use('/conversations', connectMongoDb, conversationsRouter);
+
 const io = require('socket.io')(server);
 let clients = {};
 let users = {};
@@ -82,9 +83,11 @@ io.of('privatechat').on('connection', socket => {
      */
     socket.on('send_new_message', async (messageData) => {
         try {
+            // console.log(messageData.socket_key, 85)
+            // console.log('-----------------------------------------------')
             if (clients[socket.handshake.query.client_id] &&
                 clients[socket.handshake.query.client_id][messageData.socket_key]) {
-                const result = await conversationController.insertNewMessage(messageData, socket.handshake.query.client_id);
+                const result = await conversationSocketController.insertNewMessage(messageData, socket.handshake.query.client_id);
                 clients[socket.handshake.query.client_id][messageData.socket_key].emit('receive_new_message', messageData);
             } else {
                 return;

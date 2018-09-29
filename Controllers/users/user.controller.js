@@ -8,9 +8,9 @@ module.exports = {
     getUsers: async (req, res, next) => {
         try {
             const userData = await usersModel.find({});
-            res.status(200).json({ result: userData, error: false });
+            res.status(200).send({ result: userData, error: false });
         } catch (error) {
-            handleError(error);
+            handleError(error, req, res);
         }
     }
 }

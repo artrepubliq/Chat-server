@@ -1,7 +1,7 @@
 const { chat_thread_model } = require('../../schema/chat-message/chat_message.schema');
 const { consversationModel } = require('../../schema/converstion/conversation.schema');
 const moment = require('moment');
-const conversationController = {
+const conversationSocketController = {
     /**
      * @param messageObject takes @param message, @param receiver_name, @param sender_id, @param time as an object
      * and @param client_id for particular client
@@ -27,7 +27,7 @@ const conversationController = {
             * inserting new message_thread for the two users
             */
             if (read_conversations && read_conversations.length > 0) {
-                console.log(read_conversations[0].conversation_thread_id, 22);
+                // console.log(read_conversations[0].conversation_thread_id, 22);
                 const id = read_conversations[0].conversation_thread_id;
                 chat_thread = await chat_thread_model.updateOne(
                     { _id: id },
@@ -57,10 +57,10 @@ const conversationController = {
             return error;
         }
     },
+
     /**
      * read messages using @param conversation_id, @param client_id 
      */
-
     readMessageThreads: async (req, res, next) => {
         const { client_id, conversation_id, date } = { ...req.body }
         let conversation_thread_id;
@@ -75,10 +75,10 @@ const conversationController = {
                     if (message_threads) {
                         res.status(200).send({ error: false, result: message_threads })
                     } else {
-                        res.status(200).send({ error: true, result: 'No messages found' })
+                        res.status(200).send({ error: false, result: 'No messages found' })
                     }
                 } else {
-                    res.status(200).send({ error: true, result: 'No conversations found' });
+                    res.status(200).send({ error: false, result: 'No conversations found' });
                 }
             }
         } catch (error) {
@@ -87,4 +87,4 @@ const conversationController = {
     }
 }
 
-module.exports = { conversationController };
+module.exports = { conversationSocketController };
