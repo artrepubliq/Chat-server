@@ -10,6 +10,7 @@ const cors = require('cors');
 const { userRouter } = require('../Controllers/users');
 const { conversationSocketController } = require('../Controllers/conversation/conversation.controller.socket');
 const { conversationsRouter } = require('../Controllers/conversation');
+const moment = require('moment');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -34,10 +35,7 @@ let users = {};
  */
 io.of('privatechat').on('connection', socket => {
     console.log(`private chat users/sockets connected : ${Object.keys(io.sockets.connected).length}`);
-    updateNickNames = () => {
-        io.of('privatechat').emit('usernames', Object.keys(users));
-    }
-
+    socket.emit('connection', { status: true, data: 'socket connected successfully' });
     updateClientUsers = (client_id) => {
         let user_ids = [];
         Object.keys(clients[client_id]).map(user_socket => {
@@ -87,8 +85,29 @@ io.of('privatechat').on('connection', socket => {
             // console.log('-----------------------------------------------')
             if (clients[socket.handshake.query.client_id] &&
                 clients[socket.handshake.query.client_id][messageData.socket_key]) {
-                const result = await conversationSocketController.insertNewMessage(messageData, socket.handshake.query.client_id);
-                clients[socket.handshake.query.client_id][messageData.socket_key].emit('receive_new_message', messageData);
+                const result = await conversationSocketController.insert_new_message(messageData, socket.handshake.query.client_id);
+                clients[socket.handshake.query.client_id][messageData.socket_key].emit('receive_new_message', result);
+            } else {
+                return;
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+    });
+
+    /**
+     * this listens on user typing
+     * @param user_typeing
+     */
+    socket.on('user_typing', async (userData) => {
+        try {
+            // console.log(messageData.socket_key, 85)
+            // console.log('-----------------------------------------------')
+            if (clients[socket.handshake.query.client_id] &&
+                clients[socket.handshake.query.client_id][userData.socket_key]) {
+                const result = await conversationSocketController.insertNewMessage(userData, socket.handshake.query.client_id);
+                clients[socket.handshake.query.client_id][userData.socket_key].emit('user_typing', userData);
             } else {
                 return;
             }
@@ -157,8 +176,9 @@ io.of('groupchat').on('connection', (socket) => {
     });
 
 });
-app.use(handleErrors.handleError);
+
 app.use(handleErrors.handle404Error);
+app.use(handleErrors.handleError);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
