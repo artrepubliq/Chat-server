@@ -15,22 +15,43 @@ const conversationApiController = {
                 let from_date = new Date(created_time);
                 let to_date = new Date(`${created_time} 23:59:59`).setMinutes(330);
                 to_date = new Date(to_date);
-                const messages = await chat_thread_model.aggregate([
+                console.log(from_date, to_date);
+                const sender_messages = await chat_thread_model.find(
                     {
-                        $match:
-                        {
-                            $or: [
-                                { "sender_id": sender_id }, { "receiver_id": sender_id }
-                            ]
+                        client_id,
+                        $and: [
+                            { receiver_id }, { sender_id }
+                        ],
+                        created_time: {
+                            $gte: from_date,
+                            $lt: to_date
                         },
-                    },
-                    { $sort: { created_time: 1 } }
-                    // {$group: {_id:{
-
-                    // }}
-
-                    // { $group: { client_id: client_id } },
-                ]);
+                    }
+                );
+                const receiver_messages = await chat_thread_model.find(
+                    {
+                        client_id,
+                        $and: [
+                            { sender_id: receiver_id }, { receiver_id: sender_id }
+                        ],
+                        created_time: {
+                            $gte: from_date,
+                            $lt: to_date
+                        },
+                    }
+                );
+                let messages = [...sender_messages, ...receiver_messages];
+                // const messages = await chat_thread_model.aggregate([
+                //     {
+                //         $match:
+                //         {
+                //             $or: [
+                //                 { "sender_id": sender_id }, { "receiver_id": sender_id }
+                //             ]
+                //         },
+                //     },
+                //     { $sort: { created_time: 1 } }
+                // ]);
                 // const messages = await chat_thread_model.find({ client_id, sender_id, receiver_id: sender_id });
 
                 // { $match: { $or: [ { score: { $gt: 70, $lt: 90 } }, { views: { $gte: 1000 } } ] } },
@@ -44,6 +65,9 @@ const conversationApiController = {
                 //     sender_id: receiver_id,
                 //     receiver_id: sender_id,
                 //     client_id
+                messages = messages.sort((a, b) => {
+                    return new Date(a.created_time) - new Date(b.created_time);
+                })
                 res.send({ error: false, result: messages });
             }
         } catch (error) {
