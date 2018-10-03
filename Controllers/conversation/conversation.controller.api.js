@@ -20,11 +20,11 @@ const conversationApiController = {
                         $match:
                         {
                             $or: [
-                                { "sender_id": sender_id}, {"receiver_id": sender_id }
+                                { "sender_id": sender_id }, { "receiver_id": sender_id }
                             ]
-
-                        }
+                        },
                     },
+                    { $sort: { created_time: 1 } }
                     // {$group: {_id:{
 
                     // }}
