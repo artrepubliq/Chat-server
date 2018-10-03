@@ -100,14 +100,12 @@ io.of('privatechat').on('connection', socket => {
      * this listens on user typing
      * @param user_typeing
      */
-    socket.on('user_typing', async (userData) => {
+    socket.on('user_typing_emit', async (userData) => {
         try {
-            // console.log(messageData.socket_key, 85)
-            // console.log('-----------------------------------------------')
             if (clients[socket.handshake.query.client_id] &&
                 clients[socket.handshake.query.client_id][userData.socket_key]) {
-                const result = await conversationSocketController.insertNewMessage(userData, socket.handshake.query.client_id);
-                clients[socket.handshake.query.client_id][userData.socket_key].emit('user_typing', userData);
+                clients[socket.handshake.query.client_id][userData.socket_key].emit('user_typing_listener', userData);
+                socket.emit('user_typing_emit_confirmation', true);
             } else {
                 return;
             }
