@@ -15,7 +15,6 @@ const conversationApiController = {
                 let from_date = new Date(created_time);
                 let to_date = new Date(`${created_time} 23:59:59`).setMinutes(330);
                 to_date = new Date(to_date);
-                console.log(from_date, to_date);
                 const sender_messages = await chat_thread_model.find(
                     {
                         client_id,
@@ -41,30 +40,6 @@ const conversationApiController = {
                     }
                 );
                 let messages = [...sender_messages, ...receiver_messages];
-                // const messages = await chat_thread_model.aggregate([
-                //     {
-                //         $match:
-                //         {
-                //             $or: [
-                //                 { "sender_id": sender_id }, { "receiver_id": sender_id }
-                //             ]
-                //         },
-                //     },
-                //     { $sort: { created_time: 1 } }
-                // ]);
-                // const messages = await chat_thread_model.find({ client_id, sender_id, receiver_id: sender_id });
-
-                // { $match: { $or: [ { score: { $gt: 70, $lt: 90 } }, { views: { $gte: 1000 } } ] } },
-                // {
-                //     'created_time': {
-                //         '$gte': from_date,
-                //         '$lt': to_date
-                //     },
-                //     sender_id: sender_id,
-                //     receiver_id: receiver_id,
-                //     sender_id: receiver_id,
-                //     receiver_id: sender_id,
-                //     client_id
                 messages = messages.sort((a, b) => {
                     return new Date(a.created_time) - new Date(b.created_time);
                 })
@@ -73,8 +48,23 @@ const conversationApiController = {
         } catch (error) {
             next(error);
         }
-        // console.log(new Date("2018-10-03 23:59:59"));
+    },
+
+    testUpdateMessageReceipt: async (req, res, next) => {
+        const { received_time, _id, client_id } = { ...req.body };
+        try {
+            const result = await chat_thread_model.updateMany(
+                { _id: { $in: _id } },
+                { $set: { read_receipts: true } },
+                // { multi: true }
+            );
+            res.send(result);
+        } catch (error) {
+            next(error);
+        }
     }
+
+
     // readMessageThreads: async (req, res, next) => {
     //     const { client_id, conversation_id, date } = { ...req.body }
     //     let conversation_thread_id;

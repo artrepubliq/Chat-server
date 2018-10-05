@@ -10,6 +10,11 @@ const chat_thread_schema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    message_type: {
+        required: true,
+        type: String,
+        default: 'text'
+    },
     sender_id: {
         type: String,
         require: true,
@@ -27,10 +32,14 @@ const chat_thread_schema = new mongoose.Schema({
         required: true,
         type: String
     },
-    read_receipts: {
+    status: {
         required: true,
-        type: Boolean,
-        default: false
+        type: Number,
+        default: -1
+    },
+    received_time: {
+        required: false,
+        type: Date
     },
     attachments: {
         required: false,

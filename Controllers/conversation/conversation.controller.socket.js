@@ -27,6 +27,21 @@ const conversationSocketController = {
             console.log(error);
         }
     },
+    /**
+     * @param messageObject takes message object from recieves end to update status of message
+     */
+    updateMessageReceipt: async (messageObject, client_id) => {
+        const { received_time, _id } = { ...messageObject };
+        try {
+            const result = await chat_thread_model.updateMany(
+                { _id: { $in: _id } },
+                { $set: { status: 1, received_time } },
+            );
+            return result;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     //     insertNewMessage: async (messageObject, client_id) => {
 
