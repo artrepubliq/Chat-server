@@ -10,7 +10,6 @@ const cors = require('cors');
 const { userRouter } = require('../Controllers/users');
 const { conversationSocketController } = require('../Controllers/conversation/conversation.controller.socket');
 const { conversationsRouter } = require('../Controllers/conversation');
-const moment = require('moment');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -64,15 +63,18 @@ io.of('privatechat').on('connection', socket => {
      * @param user_login
      */
     socket.on('user_login', (userData) => {
-        let users = {}
-        socket.client_id = socket.handshake.query.client_id;
-        socket.user_name = userData.user_name;
-        socket.user_id = userData.user_id;
-        users[`${userData._id}_${socket.handshake.query.client_id}`] = socket;
-        updateClients(socket.handshake.query.client_id, users);
-        socket.join(socket.handshake.query.client_id, () => {
-            updateClientUsers(socket.handshake.query.client_id);
-        });
+        let users = {};
+        if (socket.handshake.query.client_id) {
+            let client_id = socket.handshake.query.client_id;
+            socket.client_id = socket.handshake.query.client_id;
+            socket.user_name = userData.user_name;
+            socket.user_id = userData.user_id;
+            users[`${userData._id}_${client_id}`] = socket;
+            updateClients(client_id, users);
+            socket.join(client_id, () => {
+                updateClientUsers(client_id);
+            });
+        }
     });
 
     /**
@@ -81,14 +83,18 @@ io.of('privatechat').on('connection', socket => {
      */
     socket.on('send_new_message', async (messageData) => {
         try {
-            // console.log(messageData.socket_key, 85)
-            // console.log('-----------------------------------------------')
-            if (clients[socket.handshake.query.client_id] &&
-                clients[socket.handshake.query.client_id][messageData.socket_key]) {
-                const result = await conversationSocketController.insert_new_message(messageData, socket.handshake.query.client_id);
-                clients[socket.handshake.query.client_id][messageData.socket_key].emit('receive_new_message', result);
+            let client_id = socket.handshake.query.client_id;
+            if (client_id) {
+                const result = await conversationSocketController.insert_new_message(messageData, client_id);
+                socket.emit('new_message_stored_in_db_confirm', result);
+                if (clients[client_id] &&
+                    clients[client_id][messageData.socket_key]) {
+                    clients[client_id][messageData.socket_key].emit('receive_new_message', result);
+                } else {
+                    return;
+                }
             } else {
-                return;
+                return
             }
         }
         catch (error) {
@@ -102,12 +108,16 @@ io.of('privatechat').on('connection', socket => {
      */
     socket.on('user_typing_emit', async (userData) => {
         try {
-            if (clients[socket.handshake.query.client_id] &&
-                clients[socket.handshake.query.client_id][userData.socket_key]) {
-                clients[socket.handshake.query.client_id][userData.socket_key].emit('user_typing_listener', userData);
-                socket.emit('user_typing_emit_confirmation', true);
+            let client_id = socket.handshake.query.client_id;
+            if (client_id) {
+                if (clients[client_id] &&
+                    clients[client_id][userData.socket_key]) {
+                    clients[client_id][userData.socket_key].emit('user_typing_listener', { user_id: userData.user_id });
+                } else {
+                    return;
+                }
             } else {
-                return;
+                return
             }
         }
         catch (error) {
@@ -116,13 +126,41 @@ io.of('privatechat').on('connection', socket => {
     });
 
     /**
+     * @param messageData takes the message id object details for receiver confirmation
+     */
+    socket.on('message_read_confirm_from_receiver', async (messageData) => {
+        let client_id = socket.handshake.query.client_id;
+        console.log(client_id, 129);
+        if (client_id) {
+            console.log(client_id);
+            if (clients[client_id] &&
+                clients[client_id][messageData.socket_key]) {
+                const updateResult = await conversationSocketController.updateMessageReceipt(messageData, client_id);
+                // console.log(clients[client_id][messageData.socket_key]);
+                clients[client_id][messageData.socket_key].emit('message_read_confirm_to_sender',
+                    { _id: messageData._id, user_id: messageData.user_id });
+            } else {
+                return;
+            }
+        } else {
+            return
+        }
+
+    });
+
+    /**
      * @param disconnect_private_chat_socket triggs when user wants to disconnect the connection
      */
     socket.on('disconnect_private_chat_socket', (socketData) => {
-        console.log(socketData.socket_key, 96);
-        if (clients[socket.handshake.query.client_id][socketData.socket_key]) {
-            delete clients[socket.handshake.query.client_id][socketData.socket_key];
-            updateClientUsers(socket.handshake.query.client_id);
+        let client_id = socket.handshake.query.client_id;
+        if (client_id) {
+            console.log(socketData.socket_key, 96);
+            if (clients[client_id][socketData.socket_key]) {
+                delete clients[client_id][socketData.socket_key];
+                updateClientUsers(client_id);
+            } else {
+                return;
+            }
         } else {
             return;
         }
