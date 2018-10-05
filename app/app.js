@@ -126,7 +126,7 @@ io.of('privatechat').on('connection', socket => {
     });
 
     /**
-     * @param messageData takes the message id object details for receiver confirmation
+     * @param messageData takes the message id object details for receiver read confirmation
      */
     socket.on('message_read_confirm_from_receiver', async (messageData) => {
         let client_id = socket.handshake.query.client_id;
@@ -135,9 +135,30 @@ io.of('privatechat').on('connection', socket => {
             console.log(client_id);
             if (clients[client_id] &&
                 clients[client_id][messageData.socket_key]) {
-                const updateResult = await conversationSocketController.updateMessageReceipt(messageData, client_id);
+                const updateResult = await conversationSocketController.updateMessageReceipt(messageData, client_id, 1);
                 // console.log(clients[client_id][messageData.socket_key]);
                 clients[client_id][messageData.socket_key].emit('message_read_confirm_to_sender',
+                    { _id: messageData._id, user_id: messageData.user_id });
+            } else {
+                return;
+            }
+        } else {
+            return
+        }
+
+    });
+
+    /**
+     * @param messageData takes the message id object details for receiver confirmation
+     */
+    socket.on('message_received_confirm_from_receiver', async (messageData) => {
+        let client_id = socket.handshake.query.client_id;
+        if (client_id) {
+            console.log(client_id);
+            if (clients[client_id] &&
+                clients[client_id][messageData.socket_key]) {
+                const updateResult = await conversationSocketController.updateMessageReceipt(messageData, client_id, 0);
+                clients[client_id][messageData.socket_key].emit('message_received_confirm_to_sender',
                     { _id: messageData._id, user_id: messageData.user_id });
             } else {
                 return;
