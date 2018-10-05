@@ -9,7 +9,7 @@ const conversationSocketController = {
 
     insert_new_message: async (messageObject, client_id) => {
         try {
-            const { message, sender_id, receiver_id, created_time } = { ...messageObject };
+            const { message, sender_id, receiver_id, created_time, message_type } = { ...messageObject };
             // console.log(created_time);
             if (!message || !sender_id || !receiver_id) {
                 return false
@@ -19,7 +19,8 @@ const conversationSocketController = {
                     sender_id,
                     receiver_id,
                     created_time,
-                    client_id
+                    client_id,
+                    message_type
                 });
                 return insert_message;
             }
@@ -30,12 +31,12 @@ const conversationSocketController = {
     /**
      * @param messageObject takes message object from recieves end to update status of message
      */
-    updateMessageReceipt: async (messageObject, client_id) => {
+    updateMessageReceipt: async (messageObject, client_id, status) => {
         const { received_time, _id } = { ...messageObject };
         try {
             const result = await chat_thread_model.updateMany(
                 { _id: { $in: _id } },
-                { $set: { status: 1, received_time } },
+                { $set: { status, received_time } },
             );
             return result;
         } catch (error) {
