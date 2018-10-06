@@ -10,6 +10,10 @@ const cors = require('cors');
 const { userRouter } = require('../Controllers/users');
 const { conversationSocketController } = require('../Controllers/conversation/conversation.controller.socket');
 const { conversationsRouter } = require('../Controllers/conversation');
+const { connectMongoSocket } = require('../Middlewares/mongoDB')
+
+// const mongoose = require('mongoose');
+// const url = `mongodb://${process.env.MDB_USER}:${process.env.MDB_PASSWORD}@${process.env.MDB_HOST}/${process.env.MDB_DB}`;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -28,11 +32,17 @@ const io = require('socket.io')(server);
 let clients = {};
 let users = {};
 
+// mongoose.connect(url, {
+//     useNewUrlParser: true,
+//     useCreateIndex: true,
+// });
+connectMongoSocket();
 /**
  * @param privatechat is the namespace for single user chat.
  * @param client_id takes client id from the query string.
  */
-io.of('privatechat').on('connection', socket => {
+const privateChat = io.of('privatechat').on('connection', socket => {
+
     console.log(`private chat users/sockets connected : ${Object.keys(io.sockets.connected).length}`);
     socket.emit('connection', { status: true, data: 'socket connected successfully' });
     updateClientUsers = (client_id) => {
@@ -89,13 +99,12 @@ io.of('privatechat').on('connection', socket => {
                 socket.emit('new_message_stored_in_db_confirm', result);
                 if (clients[client_id] &&
                     clients[client_id][messageData.socket_key]) {
-                    console.log(result.message, 92);
+
                     clients[client_id][messageData.socket_key].emit('receive_new_message', result);
                 } else {
                     return;
                 }
             } else {
-                console.log(client_id, 102)
                 return
             }
         }
@@ -136,7 +145,6 @@ io.of('privatechat').on('connection', socket => {
             if (clients[client_id] &&
                 clients[client_id][messageData.socket_key]) {
                 const updateResult = await conversationSocketController.updateMessageReceipt(messageData, client_id, 1);
-                // console.log(clients[client_id][messageData.socket_key]);
                 clients[client_id][messageData.socket_key].emit('message_read_confirm_to_sender',
                     { _id: messageData._id, user_id: messageData.user_id });
             } else {
