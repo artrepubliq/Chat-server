@@ -21,7 +21,6 @@ const conversationSocketController = {
                     client_id,
                     message_type
                 });
-                console.log(insert_message)
                 return insert_message;
             }
         } catch (error) {
