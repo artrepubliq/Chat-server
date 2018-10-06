@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const chat_thread_schema = new mongoose.Schema({
 
     created_time: {
+        required: true,
         type: Date,
-        require: true,
     },
     message: {
+        required: true,
         type: String,
-        require: true,
     },
     message_type: {
         required: true,
@@ -16,16 +16,16 @@ const chat_thread_schema = new mongoose.Schema({
         default: 'text'
     },
     sender_id: {
+        required: true,
         type: String,
-        require: true,
     },
     receiver_id: {
+        required: true,
         type: String,
-        require: true,
     },
     visibility: {
+        required: true,
         type: Boolean,
-        require: true,
         default: true,
     },
     client_id: {

@@ -16,6 +16,7 @@ exports.connectMongoDb = (req, res, next) => {
         next(error);
     });
     db.on('open', () => {
+        console.log('im open')
         next();
     });
 }
