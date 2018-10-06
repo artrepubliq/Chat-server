@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
 require('dotenv').config()
-// mongodb://<dbuser>:<dbpassword>@ds115263.mlab.com:15263/heroku_c68z5q7j
+const mongoose = require('mongoose');
 const url = `mongodb://${process.env.MDB_USER}:${process.env.MDB_PASSWORD}@${process.env.MDB_HOST}/${process.env.MDB_DB}`;
 exports.connectMongoDb = (req, res, next) => {
     if (mongoose.connection.readyState === 1) {
@@ -19,4 +18,23 @@ exports.connectMongoDb = (req, res, next) => {
         console.log('im open')
         next();
     });
+}
+
+exports.connectMongoSocket = () => {
+    if (mongoose.connection.readyState === 1) {
+        return;
+    };
+    mongoose.connect(url, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+    });
+    const db = mongoose.connection;
+    return db;
+    // db.on('error', (error) => {
+    //     next(error);
+    // });
+    // db.on('open', () => {
+    //     console.log('im open')
+    //     next();
+    // });
 }
