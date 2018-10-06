@@ -4,6 +4,9 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const { connectMongoDb } = require('../Middlewares/mongoDB');
 const handleErrors = require('../Middlewares/handleErrors');
+const awsUpload   = require('../Middlewares/AWSUpload');
+const { uploadFileRouter } = require('../Controllers/AWSUploadController');
+
 require('dotenv').config();
 const cors = require('cors');
 
@@ -18,6 +21,7 @@ const { connectMongoSocket } = require('../Middlewares/mongoDB')
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/uploadfile', uploadFileRouter);
 
 const server = http.createServer(app);
 app.get('/', (req, res) => {
