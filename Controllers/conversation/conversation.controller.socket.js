@@ -10,9 +10,8 @@ const conversationSocketController = {
     insert_new_message: async (messageObject, client_id) => {
         try {
             const { message, sender_id, receiver_id, created_time, message_type } = { ...messageObject };
-            // console.log(created_time);
             if (!message || !sender_id || !receiver_id) {
-                return false
+                return false;
             } else {
                 const insert_message = await chat_thread_model.create({
                     message,
@@ -22,6 +21,7 @@ const conversationSocketController = {
                     client_id,
                     message_type
                 });
+                console.log(insert_message)
                 return insert_message;
             }
         } catch (error) {

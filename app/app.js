@@ -19,7 +19,7 @@ const server = http.createServer(app);
 app.get('/', (req, res) => {
     res.send({ status: true, });
 });
-
+app.use(connectMongoDb);
 app.use(handleErrors.responeseTime);
 app.use('/users', connectMongoDb, userRouter)
 app.use('/conversations', connectMongoDb, conversationsRouter);
@@ -89,11 +89,13 @@ io.of('privatechat').on('connection', socket => {
                 socket.emit('new_message_stored_in_db_confirm', result);
                 if (clients[client_id] &&
                     clients[client_id][messageData.socket_key]) {
+                    console.log(result.message, 92);
                     clients[client_id][messageData.socket_key].emit('receive_new_message', result);
                 } else {
                     return;
                 }
             } else {
+                console.log(client_id, 102)
                 return
             }
         }
@@ -130,9 +132,7 @@ io.of('privatechat').on('connection', socket => {
      */
     socket.on('message_read_confirm_from_receiver', async (messageData) => {
         let client_id = socket.handshake.query.client_id;
-        console.log(client_id, 129);
         if (client_id) {
-            console.log(client_id);
             if (clients[client_id] &&
                 clients[client_id][messageData.socket_key]) {
                 const updateResult = await conversationSocketController.updateMessageReceipt(messageData, client_id, 1);
