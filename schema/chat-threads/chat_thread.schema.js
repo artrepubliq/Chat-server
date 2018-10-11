@@ -44,6 +44,11 @@ const chat_thread_schema = new mongoose.Schema({
     attachments: {
         required: false,
         type: String
+    },
+    deleted_by: {
+        type: String,
+        required: true,
+        default: '1',
     }
 })
 

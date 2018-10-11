@@ -32,10 +32,6 @@ const io = require('socket.io')(server);
 let clients = {};
 let users = {};
 
-// mongoose.connect(url, {
-//     useNewUrlParser: true,
-//     useCreateIndex: true,
-// });
 connectMongoSocket();
 /**
  * @param privatechat is the namespace for single user chat.
@@ -195,7 +191,27 @@ const privateChat = io.of('privatechat').on('connection', socket => {
         }
 
     })
-
+    /**
+     * this is to delete users old messages
+     */
+    socket.on('delete_old_message', async (messageObject) => {
+        let client_id = socket.handshake.query.client_id;
+        if (messageObject.status === 'true') {
+            try {
+                messageObject['deleted_by'] = '0';
+                const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
+                clients[client_id][messageObject.sender_socket_key].emit('delete_old_message_succes_listener', messageObject);
+                clients[client_id][messageObject.receiver_socket_key].emit('delete_old_message_succes_listener', messageObject);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            // update query has to be here.
+            messageObject['deleted_by'] = messageObject.sender_id;
+            const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
+            clients[client_id][messageObject.sender_socket_key].emit('delete_old_message_succes_listener', messageObject);
+        }
+    });
 
 
 
