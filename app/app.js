@@ -36,10 +36,6 @@ const io = require('socket.io')(server);
 let clients = {};
 let users = {};
 
-// mongoose.connect(url, {
-//     useNewUrlParser: true,
-//     useCreateIndex: true,
-// });
 connectMongoSocket();
 /**
  * @param privatechat is the namespace for single user chat.
@@ -166,7 +162,6 @@ const privateChat = io.of('privatechat').on('connection', socket => {
     socket.on('message_received_confirm_from_receiver', async (messageData) => {
         let client_id = socket.handshake.query.client_id;
         if (client_id) {
-            console.log(client_id);
             if (clients[client_id] &&
                 clients[client_id][messageData.socket_key]) {
                 const updateResult = await conversationSocketController.updateMessageReceipt(messageData, client_id, 0);
@@ -197,14 +192,54 @@ const privateChat = io.of('privatechat').on('connection', socket => {
         } else {
             return;
         }
+    });
 
-    })
+    /**
+     * this is to delete users old messages
+     */
+    socket.on('delete_old_message', async (messageObject) => {
+        let client_id = socket.handshake.query.client_id;
+        if (messageObject.status === 'true') {
+            try {
+                messageObject['deleted_by'] = '0';
+                const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
+                clients[client_id][messageObject.sender_socket_key].emit('delete_old_message_succes_listener', messageObject);
+                clients[client_id][messageObject.receiver_socket_key].emit('delete_old_message_succes_listener', messageObject);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            // update query has to be here.
+            messageObject['deleted_by'] = messageObject.deleted_from;
+            const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
+            clients[client_id][messageObject.sender_socket_key].emit('delete_old_message_succes_listener', messageObject);
+        }
+    });
 
+    /**
+     * 
+     */
+    socket.on('update_sender_old_message_emit', async (messageObject) => {
+        let client_id = socket.handshake.query.client_id;
+        if (client_id) {
+            if (clients[client_id] &&
+                clients[client_id][messageObject.receiver_socket_key]) {
+                const result = await conversationSocketController.updateMessageById(messageObject, client_id);
+                if(result.nModified === 1){
+                    messageObject['updated'] = true;
+                } else {
+                    messageObject['updated'] = false;
+                }
+                clients[client_id][messageObject.receiver_socket_key].emit('update_sender_old_message_listen', messageObject);
+                socket.emit('update_sender_old_message_listen', messageObject);
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
 
-
-
-
-
+    });
 
     /********************************* SOCKET R&D ************************************/
     socket.on('new user', data => {
