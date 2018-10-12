@@ -21,6 +21,7 @@ const conversationApiController = {
                         $and: [
                             { receiver_id }, { sender_id }
                         ],
+                        deleted_by: { $nin: [sender_id, '0'] },
                         created_time: {
                             $gte: from_date,
                             $lt: to_date
@@ -33,6 +34,7 @@ const conversationApiController = {
                         $and: [
                             { sender_id: receiver_id }, { receiver_id: sender_id }
                         ],
+                        deleted_by: { $nin: [sender_id, '0'] },
                         created_time: {
                             $gte: from_date,
                             $lt: to_date

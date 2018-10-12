@@ -37,6 +37,7 @@ const conversationSocketController = {
                 { _id: { $in: _id } },
                 { $set: { status, received_time } },
             );
+
             return result;
         } catch (error) {
             console.log(error);
@@ -47,30 +48,41 @@ const conversationSocketController = {
      * this is to  delete message for a user by ID
      */
     delete_message_by_message_id: async (deleteMessageObject) => {
-        // console.log(deleteMessageObject);
-        const { _id, sender_id, receiver_id, status, deleted_by } = deleteMessageObject;
-        console.log({ _id, sender_id, receiver_id, status, deleted_by });
+        const { _id, deleted_from, deleted_to, status, deleted_by } = deleteMessageObject;
         let result;
         try {
-            console.log(deleted_by);
             const message = await chat_thread_model.find({
                 $and: [
-                    { _id }, { deleted_by: receiver_id }
+                    { _id }, { deleted_by: deleted_to }
                 ]
             });
             if (message && message.length > 0) {
-                console.log(message,61)
                 result = await chat_thread_model.updateOne(
                     { _id },
                     { $set: { deleted_by: '0' } }
                 )
             } else {
-                console.log(message, 'in else')
                 result = await chat_thread_model.updateOne(
                     { _id },
                     { $set: { deleted_by } }
                 )
             }
+            return result;
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    /**
+     * this is to update the message text for a message Id
+     */
+    updateMessageById: async (messageObject) => {
+        const { _id, message, created_time } = messageObject;
+        try {
+            const result = await chat_thread_model.updateOne(
+                { _id },
+                { $set: { message, created_time } }
+            );
             return result;
         } catch (error) {
             console.log(error);
