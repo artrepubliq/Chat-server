@@ -92,25 +92,37 @@ const privateChat = io.of('privatechat').on('connection', socket => {
      * @param send_new_message
      */
     socket.on('send_new_message', async (messageData) => {
-        try {
-            let client_id = socket.handshake.query.client_id;
-            if (client_id) {
-                const result = await conversationSocketController.insert_new_message(messageData, client_id);
-                socket.emit('new_message_stored_in_db_confirm', result);
-                if (clients[client_id] &&
-                    clients[client_id][messageData.socket_key]) {
 
-                    clients[client_id][messageData.socket_key].emit('receive_new_message', result);
-                } else {
-                    return;
-                }
-            } else {
-                return
-            }
-        }
-        catch (error) {
-            console.log(error)
-        }
+        let client_id = socket.handshake.query.client_id;
+        clients[client_id][messageData.socket_key].emit('receive_new_message', messageData);
+        const result = await conversationSocketController.insert_new_message(messageData, client_id);
+        
+        // socket.emit('new_message_stored_in_db_confirm', messageData);
+        // io.emit('receive_new_message', messageData);
+        // try {
+        //     let client_id = socket.handshake.query.client_id;
+        //     clients[client_id][messageData.socket_key].emit('receive_new_message', messageData);
+        //     const result = await conversationSocketController.insert_new_message(messageData, client_id);
+
+        //     console.log(messageData);
+        //     if (client_id) {
+        //         const result = await conversationSocketController.insert_new_message(messageData, client_id);
+        //         // socket.emit('new_message_stored_in_db_confirm', result);
+        //         // console.log(messageData);
+        //         if (clients[client_id] &&
+        //             clients[client_id][messageData.socket_key]) {
+        //                 // io.emit('receive_new_message', messageData);
+
+        //         } else {
+        //             return;
+        //         }
+        //     } else {
+        //         return
+        //     }
+        // }
+        // catch (error) {
+        //     console.log(error)
+        // }
     });
 
     /**
