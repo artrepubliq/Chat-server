@@ -43,14 +43,14 @@ connectMongoSocket();
  */
 const privateChat = io.of('privatechat').on('connection', socket => {
 
-    console.log(`private chat users/sockets connected : ${Object.keys(io.sockets.connected).length}`);
     socket.emit('connection', { status: true, data: 'socket connected successfully' });
     updateClientUsers = (client_id) => {
         let user_ids = [];
         Object.keys(clients[client_id]).map(user_socket => {
             let user_id = clients[client_id][user_socket].user_id;
             let socket_key = user_socket;
-            user_ids = [...user_ids, { user_id, socket_key }];
+            let userStatus = clients[client_id][user_socket].user_status;
+            user_ids = [...user_ids, { user_id, socket_key, userStatus }];
         });
         io.of('privatechat').to(client_id).emit('new_users', { logged_in_users: user_ids });
     }
@@ -73,12 +73,14 @@ const privateChat = io.of('privatechat').on('connection', socket => {
      * @param user_login
      */
     socket.on('user_login', (userData) => {
+        console.log(`private chat users/sockets connected : ${Object.keys(io.sockets.connected).length}`);
         let users = {};
         if (socket.handshake.query.client_id) {
             let client_id = socket.handshake.query.client_id;
             socket.client_id = socket.handshake.query.client_id;
             socket.user_name = userData.user_name;
             socket.user_id = userData.user_id;
+            socket.user_status = userData.user_status
             users[`${userData._id}_${client_id}`] = socket;
             updateClients(client_id, users);
             socket.join(client_id, () => {
@@ -88,18 +90,32 @@ const privateChat = io.of('privatechat').on('connection', socket => {
     });
 
     /**
+     * @param user_status
+     */
+    socket.on('emit_change_loggedin_user_status', userData => {
+        if (userData.user_id && socket.handshake.query.client_id) {
+            const clientId = socket.handshake.query.client_id;
+            clients[clientId][`${userData.user_id}_${clientId}`].user_status = userData.user_status;
+            userData.receivers_socket_keys.forEach(keyItem => {
+                clients[clientId][keyItem].emit('listener_change_loggedin_user_status',
+                    {user_id: userData.user_id, user_status: userData.user_status});
+            });
+        }
+    });
+    /**
      * this listens on new Message
      * @param send_new_message
      */
     socket.on('send_new_message', async (messageData) => {
+        console.log(messageData);
         try {
             let client_id = socket.handshake.query.client_id;
             if (client_id) {
                 const result = await conversationSocketController.insert_new_message(messageData, client_id);
-                socket.emit('new_message_stored_in_db_confirm', result);
+                socket.emit('new_message_stored_in_db_confirm', result);  
+                console.log(result);              
                 if (clients[client_id] &&
                     clients[client_id][messageData.socket_key]) {
-
                     clients[client_id][messageData.socket_key].emit('receive_new_message', result);
                 } else {
                     return;
@@ -140,6 +156,7 @@ const privateChat = io.of('privatechat').on('connection', socket => {
      * @param messageData takes the message id object details for receiver read confirmation
      */
     socket.on('message_read_confirm_from_receiver', async (messageData) => {
+        console.log(messageData._id);
         let client_id = socket.handshake.query.client_id;
         if (client_id) {
             if (clients[client_id] &&
@@ -182,7 +199,6 @@ const privateChat = io.of('privatechat').on('connection', socket => {
     socket.on('disconnect_private_chat_socket', (socketData) => {
         let client_id = socket.handshake.query.client_id;
         if (client_id) {
-            console.log(socketData.socket_key, 96);
             if (clients[client_id][socketData.socket_key]) {
                 delete clients[client_id][socketData.socket_key];
                 updateClientUsers(client_id);
@@ -231,7 +247,7 @@ const privateChat = io.of('privatechat').on('connection', socket => {
                     messageObject['updated'] = false;
                 }
                 clients[client_id][messageObject.receiver_socket_key].emit('update_sender_old_message_listen', messageObject);
-                socket.emit('update_sender_old_message_listen', messageObject);
+                clients[client_id][messageObject.sender_socket_key].emit('update_sender_old_message_listen', messageObject);
             } else {
                 return;
             }
