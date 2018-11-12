@@ -35,6 +35,12 @@ app.use('/conversations', connectMongoDb, conversationsRouter);
 const io = require('socket.io')(server);
 let clients = {};
 let users = {};
+/**
+ * RABIT-MQ INIT
+ */
+var amqp_adapter = require('socket.io-amqp');
+io.adapter(amqp_adapter('amqp://uowlnslo:gcdNCsGIfajynm2EqRbWmcI8rPrRmxf2@toad.rmq.cloudamqp.com/uowlnslo'));
+/** END OF RABIT-MQ */
 
 connectMongoSocket();
 /**
@@ -107,7 +113,6 @@ const privateChat = io.of('privatechat').on('connection', socket => {
      * @param send_new_message
      */
     socket.on('send_new_message', async (messageData) => {
-        console.log(messageData);
         try {
             let client_id = socket.handshake.query.client_id;
             if (client_id) {
