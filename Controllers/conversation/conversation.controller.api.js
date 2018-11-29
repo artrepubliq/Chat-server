@@ -8,6 +8,7 @@ const conversationApiController = {
 
     readMessageThreads: async (req, res, next) => {
         const { client_id, sender_id, receiver_id, created_time } = { ...req.body };
+        console.log(req.body);
         try {
             if (!client_id || !sender_id || !receiver_id || !created_time) {
                 res.send({ error: false, result: 'Required parameters are missing!' })
@@ -64,7 +65,35 @@ const conversationApiController = {
         } catch (error) {
             next(error);
         }
+    },
+
+    /**
+     * GET UN-READ CONVERSATIONS BY USERID
+     */
+    getUnReadMessagesByUserId: async (req, res, next) => {
+        console.log(req.body);
+        const { client_id, receiver_id } = req.body;
+        console.log(client_id);
+        console.log(receiver_id);
+        try {
+            if (!client_id || !receiver_id) {
+                res.send({ error: false, result: 'Required Parameters are missing!!!' });
+            } else {
+                const unread_messages = await chat_thread_model.count(
+                    {
+                        client_id,
+                        receiver_id,
+                        status: { $nin: [1] }
+                    }
+                );
+
+                res.send({ error: false, result: unread_messages });
+            }
+        } catch (error) {
+            next(error);
+        }
     }
+
 }
 
 module.exports = { conversationApiController }
