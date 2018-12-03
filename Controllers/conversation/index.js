@@ -6,7 +6,7 @@ const { conversationApiController } = require('./conversation.controller.api');
 
 conversationsRouter.post('/', conversationApiController.readMessageThreads);
 // conversationsRouter.post('/testupdatemany', conversationApiController.testUpdateMessageReceipt);
-// conversationsRouter.post('/getunreadmessagesbyuserid', conversationApiController.getUnReadMessagesByUserId);
+conversationsRouter.post('/getunreadmessagesbyuserid', conversationApiController.getUnReadMessagesByUserId);
 // conversationsRouter.get('/test', function(req, res) {
 //     // pass the csrfToken to the view
 //     res.render('send', { test:'test'})
