@@ -8,7 +8,6 @@ const conversationApiController = {
 
     readMessageThreads: async (req, res, next) => {
         const { client_id, sender_id, receiver_id, created_time } = { ...req.body };
-        console.log(req.body);
         try {
             if (!client_id || !sender_id || !receiver_id || !created_time) {
                 res.send({ error: false, result: 'Required parameters are missing!' })
