@@ -70,7 +70,7 @@ function onSocketConnection(socket) {
 
     socket.on('user_login', (userData) => { afterUserLogin(socket, userData) });
 
-    socket.on('emit_change_loggedin_user_status', changeLoginUserStatus);
+    socket.on('emit_change_loggedin_user_status', (userStatus) => {changeLoginUserStatus(socket, userStatus)});
 
     socket.on('user_typing_emit', (userData) => {
         userTyping(socket, userData, client_id);
@@ -87,6 +87,10 @@ function onSocketConnection(socket) {
     socket.on('disconnect_private_chat_socket', (socketData) => { disconnectPrivateChatSocket(socket, socketData); });
 
     socket.on('delete_old_message', (messageObject) => { deleteOldMessages(socket, messageObject); });
+
+    socket.on('delete_received_message_from_receiver_end_on_delete_everyone', (messageObject) => { deleteReceivedMessageOnDeleteEveryOne(socket, messageObject); });
+
+    socket.on('change_user_profile_pic_emit', (messageObject) => { changeUserProfilePic(socket, messageObject); });
 
 }
 
@@ -145,7 +149,7 @@ const afterUserLogin = (socket, userData) => {
         socket.user_name = userData.user_name;
         socket.user_id = userData.user_id;
         socket.user_status = userData.user_status;
-        users[`${userData._id}_${client_id}`] = socket;
+        users[`${userData.user_id}_${client_id}`] = socket;
         updateClients(client_id, users);
         socket.join(client_id, () => {
             updateClientUsers(client_id);
@@ -157,9 +161,9 @@ const afterUserLogin = (socket, userData) => {
 /**
  * @param user_status
  */
-changeLoginUserStatus = (userData) => {
-    if (userData.user_id && this.handshake.query.client_id) {
-        const clientId = this.handshake.query.client_id;
+changeLoginUserStatus = (socket, userData) => {
+    if (userData.user_id && socket.handshake.query.client_id) {
+        const clientId = socket.handshake.query.client_id;
         clients[clientId][`${userData.user_id}_${clientId}`].user_status = userData.user_status;
         userData.receivers_socket_keys.forEach(keyItem => {
             clients[clientId][keyItem].emit('listener_change_loggedin_user_status',
@@ -263,7 +267,7 @@ messageReceivedConfirm = async (socket, messageData) => {
  */
 disconnectPrivateChatSocket = (socket, socketData) => {
     let client_id = socket.handshake.query.client_id;
-    if (client_id) {
+    if (client_id && clients[client_id] && clients[client_id][socketData.socket_key]) {
         if (clients[client_id][socketData.socket_key]) {
             delete clients[client_id][socketData.socket_key];
             updateClientUsers(client_id, socket);
@@ -280,16 +284,18 @@ disconnectPrivateChatSocket = (socket, socketData) => {
  */
 deleteOldMessages = async (socket, messageObject) => {
     let client_id = socket.handshake.query.client_id;
-    if (messageObject.status === 'true') {
+    if (messageObject.deleteForBoth) {
+        console.log(messageObject, 289)
         try {
             messageObject['deleted_by'] = '0';
             const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
             clients[client_id][messageObject.sender_socket_key].emit('delete_old_message_succes_listener', messageObject);
-            clients[client_id][messageObject.receiver_socket_key].emit('delete_old_message_succes_listener', messageObject);
+            // clients[client_id][messageObject.receiver_socket_key].emit('delete_old_message_listener_for_receiver', messageObject);
         } catch (error) {
             console.log(error);
         }
     } else {
+        console.log(messageObject,299);
         // update query has to be here.
         messageObject['deleted_by'] = messageObject.deleted_from;
         const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
@@ -297,6 +303,13 @@ deleteOldMessages = async (socket, messageObject) => {
     }
 }
 
+/**
+ * DELETE MESSAGE CONFIRMATION TO RECEIVER ON DELETE MESSAGE FOR BOTH PARTIES
+ */
+deleteReceivedMessageOnDeleteEveryOne = (socket, messageObject) => {
+    let client_id = socket.handshake.query.client_id;
+    clients[client_id][messageObject.receiver_socket_key].emit('delete_received_message_from_receiver_end_on_delete_everyone_listener', messageObject)
+}
 /**
  * 
  */
@@ -321,6 +334,11 @@ updateSenderOldMsgEmit = async (socket, messageObject) => {
     }
 }
 
+changeUserProfilePic = (socket, userObject) => {
+    let client_id = socket.handshake.query.client_id;
+    io.of('privatechat').to(client_id).emit('change_user_profile_pic_listener', userObject );
+}
+
 /********************************* SOCKET R&D ************************************/
 newUser = (socket, data) => {
     console.log(data);
@@ -336,7 +354,6 @@ newUser = (socket, data) => {
  * this is to send a message to a socket if a user is listed in users 
  */
 sendMessage = (socket, data) => {
-    console.log(data, 76);
     if (data.nickname in users) {
         // io.of('privatechat').emit('new message', { message: data, nickname: socket.nickname });
         users[data.nickname].emit('new message', { message: data, nickname: socket.nickname });
