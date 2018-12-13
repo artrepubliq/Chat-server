@@ -78,14 +78,16 @@ const conversationApiController = {
             if (!client_id || !receiver_id) {
                 res.send({ error: false, result: 'Required Parameters are missing!!!' });
             } else {
-                const unread_messages = await chat_thread_model.count(
+                const unread_messages = await chat_thread_model.find(
                     {
                         client_id,
                         receiver_id,
                         status: { $nin: [1] }
                     }
                 );
-
+                if (!unread_messages) {
+                    unread_messages = [];
+                }
                 res.send({ error: false, result: unread_messages });
             }
         } catch (error) {
