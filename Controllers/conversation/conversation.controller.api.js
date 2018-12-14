@@ -86,7 +86,6 @@ const conversationApiController = {
                     }
                 );
                 if (!unread_messages) {
-                    console.log(unread_messages, 93);
                     unread_messages = [];
                 }
                 res.send({ error: false, result: unread_messages });

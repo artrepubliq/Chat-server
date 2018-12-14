@@ -35,7 +35,7 @@ const opts = {
     prefix: 'flujo',
     useInputExchange: false
 }
-io.adapter(amqp_adapter('amqp://uowlnslo:gcdNCsGIfajynm2EqRbWmcI8rPrRmxf2@toad.rmq.cloudamqp.com/uowlnslo', opts));
+io.adapter(amqp_adapter('amqp://jozbxaoi:yVavOyMfhTEcK5G1qPBePQPc3tC0uC1m@fox.rmq.cloudamqp.com/jozbxaoi', opts));
 // io.origins(['https://flujo.flujo.in']); /// THIS HEADER IS REQUIRED TO ALLOW ONLY OUR CLIENT
 
 let clients = {};
