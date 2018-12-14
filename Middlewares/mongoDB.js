@@ -1,6 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose');
-const url = `mongodb://${process.env.MDB_USER}:${process.env.MDB_PASSWORD}@${process.env.MDB_HOST}/${process.env.MDB_DB}`;
+const url = `mongodb://${process.env.MDB_USER}:${process.env.MDB_PASSWORD}@${process.env.MDB_HOST}/${process.env.MDB_DATABASE}`;
 exports.connectMongoDb = (req, res, next) => {
     if (mongoose.connection.readyState === 1) {
         return next();
