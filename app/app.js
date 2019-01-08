@@ -68,6 +68,8 @@ function onSocketConnection(socket) {
     const message = { status: true, data: 'socket connected successfully' };
     socket.emit('connection', message);
 
+    socket.on('update_client_sockets', (userData) => { updateClinetSockets(socket, userData) });
+
     socket.on('user_login', (userData) => { afterUserLogin(socket, userData) });
 
     socket.on('emit_change_loggedin_user_status', (userStatus) => {changeLoginUserStatus(socket, userStatus)});
