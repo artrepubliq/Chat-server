@@ -14,42 +14,83 @@ const conversationApiController = {
             } else {
                 let from_date = new Date(created_time);
                 let to_date = new Date(`${created_time} 23:59:59`).setMinutes(330);
-                to_date = new Date(to_date);
-                const sender_messages = await chat_thread_model.find(
-                    {
-                        client_id,
-                        $and: [
-                            { receiver_id }, { sender_id }
-                        ],
-                        deleted_by: { $nin: [sender_id, '0'] },
-                        created_time: {
-                            $gte: from_date,
-                            $lt: to_date
-                        },
-                    }
-                );
-                const receiver_messages = await chat_thread_model.find(
-                    {
-                        client_id,
-                        $and: [
-                            { sender_id: receiver_id }, { receiver_id: sender_id }
-                        ],
-                        deleted_by: { $nin: [sender_id, '0'] },
-                        created_time: {
-                            $gte: from_date,
-                            $lt: to_date
-                        },
-                    }
-                );
-                let messages = [...sender_messages, ...receiver_messages];
-                messages = messages.sort((a, b) => {
-                    return new Date(a.created_time) - new Date(b.created_time);
-                })
-                res.send({ error: false, result: messages });
+                to_date = new Date(to_date);  
+                messages = await conversationApiController.readMesageThreadsFromDB(client_id, sender_id, receiver_id, created_time, from_date, to_date);
+                if (messages.length <= 0) {
+                    console.log('NO Messages');
+                    messages = await conversationApiController.readOlderMesageThreadsFromDB(client_id, sender_id, receiver_id);
+                    res.send({ error: false, result: messages });
+                } else {
+                    res.send({ error: false, result: messages });
+                }
             }
         } catch (error) {
             next(error);
         }
+    },
+
+    readMesageThreadsFromDB: (client_id, sender_id, receiver_id, created_time, from_date,to_date) => {
+        return new Promise( async (resolve, reject) =>  {
+            const sender_messages = await chat_thread_model.find(
+                {
+                    client_id,
+                    $and: [
+                        { receiver_id }, { sender_id }
+                    ],
+                    deleted_by: { $nin: [sender_id, '0'] },
+                    created_time: {
+                        $gte: from_date,
+                        $lt: to_date
+                    },
+                }
+            );
+            const receiver_messages = await chat_thread_model.find(
+                {
+                    client_id,
+                    $and: [
+                        { sender_id: receiver_id }, { receiver_id: sender_id }
+                    ],
+                    deleted_by: { $nin: [sender_id, '0'] },
+                    created_time: {
+                        $gte: from_date,
+                        $lt: to_date
+                    },
+                }
+            );
+            let messages = [...sender_messages, ...receiver_messages];
+            messages = messages.sort((a, b) => {
+                return new Date(a.created_time) - new Date(b.created_time);
+            });
+            resolve(messages);
+        });
+    },
+
+    readOlderMesageThreadsFromDB: (client_id, sender_id, receiver_id) => {
+        return new Promise( async (resolve, reject) =>  {
+            const sender_messages = await chat_thread_model.find(
+                {
+                    client_id,
+                    $and: [
+                        { receiver_id }, { sender_id }
+                    ],
+                    deleted_by: { $nin: [sender_id, '0'] }
+                }
+            ).sort({created_time:-1}).limit(15);
+            const receiver_messages = await chat_thread_model.find(
+                {
+                    client_id,
+                    $and: [
+                        { sender_id: receiver_id }, { receiver_id: sender_id }
+                    ],
+                    deleted_by: { $nin: [sender_id, '0'] }
+                }
+            ).sort({created_time:-1}).limit(15);;
+            let messages = [...sender_messages, ...receiver_messages];
+            messages = messages.sort((a, b) => {
+                return new Date(a.created_time) - new Date(b.created_time);
+            });
+            resolve(messages);
+        });
     },
 
     testUpdateMessageReceipt: async (req, res, next) => {
