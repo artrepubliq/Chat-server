@@ -17,7 +17,9 @@ const conversationApiController = {
                 to_date = new Date(to_date);  
                 messages = await conversationApiController.readMesageThreadsFromDB(client_id, sender_id, receiver_id, created_time, from_date, to_date);
                 if (messages.length <= 0) {
-                    console.log('NO Messages');
+                    messages = await conversationApiController.readOlderMesageThreadsFromDB(client_id, sender_id, receiver_id);
+                    res.send({ error: false, result: messages });
+                } else if (messages.length < 10) {
                     messages = await conversationApiController.readOlderMesageThreadsFromDB(client_id, sender_id, receiver_id);
                     res.send({ error: false, result: messages });
                 } else {
