@@ -1,51 +1,63 @@
 const { chat_thread_model } = require('../../schema/chat-threads/chat_thread.schema');
 const { consversationModel } = require('../../schema/converstion/conversation.schema');
-
+const jwt = require('jsonwebtoken');
 const conversationApiController = {
     /**
      * read messages using @param conversation_id, @param client_id 
      */
 
     readMessageThreads: async (req, res, next) => {
-        const { client_id, sender_id, receiver_id, created_time } = { ...req.body };
+        const { client_id, sender_idd, receiver_id, created_time } = { ...req.body };
+
+        // sender_id is the ID of the currently loggedIn user
+        // receiverID is the ID of the user with whom the currently loggedIn user is talking to
+        console.log("JSON WebToken ###",process.env.JWT_KEY)
         try {
-            if (!client_id || !sender_id || !receiver_id || !created_time) {
-                res.send({ error: false, result: 'Required parameters are missing!' })
+            if (req.headers.authorization) {
+                const verfyJwt = jwt.verify(req.headers.authorization, process.env.JWT_KEY);
+                console.log(verfyJwt, 'verfyJwt');
+                const sender_id  = verfyJwt.user_id;
+                const client_id  = verfyJwt.client_id;
+                if (!client_id || !sender_id || !receiver_id || !created_time) {
+                    res.send({ error: false, result: 'Required parameters are missing!' })
+                } else {
+                    let from_date = new Date(created_time);
+                    let to_date = new Date(`${created_time} 23:59:59`).setMinutes(330);
+                    to_date = new Date(to_date);
+                    const sender_messages = await chat_thread_model.find(
+                        {
+                            client_id,
+                            $and: [
+                                { receiver_id }, { sender_id }
+                            ],
+                            deleted_by: { $nin: [sender_id, '0'] },
+                            created_time: {
+                                $gte: from_date,
+                                $lt: to_date
+                            },
+                        }
+                    );
+                    const receiver_messages = await chat_thread_model.find(
+                        {
+                            client_id,
+                            $and: [
+                                { sender_id: receiver_id }, { receiver_id: sender_id }
+                            ],
+                            deleted_by: { $nin: [sender_id, '0'] },
+                            created_time: {
+                                $gte: from_date,
+                                $lt: to_date
+                            },
+                        }
+                    );
+                    let messages = [...sender_messages, ...receiver_messages];
+                    messages = messages.sort((a, b) => {
+                        return new Date(a.created_time) - new Date(b.created_time);
+                    })
+                    res.send({ error: false, result: messages });
+                }
             } else {
-                let from_date = new Date(created_time);
-                let to_date = new Date(`${created_time} 23:59:59`).setMinutes(330);
-                to_date = new Date(to_date);
-                const sender_messages = await chat_thread_model.find(
-                    {
-                        client_id,
-                        $and: [
-                            { receiver_id }, { sender_id }
-                        ],
-                        deleted_by: { $nin: [sender_id, '0'] },
-                        created_time: {
-                            $gte: from_date,
-                            $lt: to_date
-                        },
-                    }
-                );
-                const receiver_messages = await chat_thread_model.find(
-                    {
-                        client_id,
-                        $and: [
-                            { sender_id: receiver_id }, { receiver_id: sender_id }
-                        ],
-                        deleted_by: { $nin: [sender_id, '0'] },
-                        created_time: {
-                            $gte: from_date,
-                            $lt: to_date
-                        },
-                    }
-                );
-                let messages = [...sender_messages, ...receiver_messages];
-                messages = messages.sort((a, b) => {
-                    return new Date(a.created_time) - new Date(b.created_time);
-                })
-                res.send({ error: false, result: messages });
+                res.send({ error: false, result: 'Required parameters are missing!' })
             }
         } catch (error) {
             next(error);
@@ -71,25 +83,35 @@ const conversationApiController = {
      */
     getUnReadMessagesByUserId: async (req, res, next) => {
         console.log(req.body);
-        const { client_id, receiver_id } = req.body;
-        console.log(client_id);
-        console.log(receiver_id);
+        // receiver_id is the ID of the currently loggedIn user
+        
         try {
-            if (!client_id || !receiver_id) {
-                res.send({ error: false, result: 'Required Parameters are missing!!!' });
-            } else {
-                const unread_messages = await chat_thread_model.find(
-                    {
-                        client_id,
-                        receiver_id,
-                        status: { $nin: [1] }
+            if (req.headers.authorization) {
+                const verfyJwt = jwt.verify(req.headers.authorization, process.env.JWT_KEY);
+                console.log(verfyJwt, 'verfyJwt');
+                const client_id = verfyJwt.client_id;
+                const receiver_id = verfyJwt.user_id;
+            console.log(client_id);
+            console.log(receiver_id);
+                if (!client_id || !receiver_id) {
+                    res.send({ error: false, result: 'Required Parameters are missing!!!' });
+                } else {
+                    const unread_messages = await chat_thread_model.find(
+                        {
+                            client_id,
+                            receiver_id,
+                            status: { $nin: [1] }
+                        }
+                    );
+                    if (!unread_messages) {
+                        unread_messages = [];
                     }
-                );
-                if (!unread_messages) {
-                    unread_messages = [];
+                    res.send({ error: false, result: unread_messages });
                 }
-                res.send({ error: false, result: unread_messages });
+            } else {
+                res.send({ error: false, result: 'Required parameters are missing!' })
             }
+
         } catch (error) {
             next(error);
         }

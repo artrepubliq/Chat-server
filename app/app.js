@@ -381,7 +381,7 @@ disConnect = (socket, data) => {
 app.use(handleErrors.handle404Error);
 app.use(handleErrors.handleError);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3040;
 server.listen(port, () => {
     console.log(`Im listening on ${process.env.NODE_ENV} environment with port ${server.address().port}`);
 });
