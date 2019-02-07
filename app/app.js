@@ -14,7 +14,18 @@ const { userRouter } = require('../Controllers/users');
 const { conversationSocketController } = require('../Controllers/conversation/conversation.controller.socket');
 const { conversationsRouter } = require('../Controllers/conversation');
 const { connectMongoSocket } = require('../Middlewares/mongoDB');
-app.use(cors());
+var corsOptions = {
+    origin: function (origin, callback) {
+      if (origin.includes("flujo.io") || origin.includes("localhost")) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    }
+  }
+  app.options(cors(corsOptions));
+  app.use(cors(corsOptions));
+  
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/uploadfile', uploadFileRouter);
@@ -380,7 +391,6 @@ disConnect = (socket, data) => {
 
 app.use(handleErrors.handle404Error);
 app.use(handleErrors.handleError);
-
 const port = process.env.PORT || 3040;
 server.listen(port, () => {
     console.log(`Im listening on ${process.env.NODE_ENV} environment with port ${server.address().port}`);
