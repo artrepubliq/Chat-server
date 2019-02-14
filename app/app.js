@@ -17,14 +17,19 @@ const { connectMongoSocket } = require('../Middlewares/mongoDB');
 const frameguard = require('frameguard');
 
 var corsOptions = {
-    origin: function (origin, callback) {
-      if (origin.includes("flujo.io") || origin.includes("localhost")) {
+  origin: function (origin, callback) {
+    try {
+      if (origin.includes("flujo.io") || origin.includes("localhost") || origin.includes("appknox")) {
         callback(null, true)
       } else {
         callback(new Error('Not allowed by CORS'))
       }
     }
+    catch (e) {
+      callback(null, false)
+    }
   }
+}
   app.options(cors(corsOptions));
   app.use(cors(corsOptions));
 app.use(frameguard({ action: 'deny' }))
