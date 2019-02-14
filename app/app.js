@@ -35,7 +35,7 @@ const opts = {
     prefix: 'flujo',
     useInputExchange: false
 }
-io.adapter(amqp_adapter('amqp://jozbxaoi:yVavOyMfhTEcK5G1qPBePQPc3tC0uC1m@fox.rmq.cloudamqp.com/jozbxaoi', opts));
+io.adapter(amqp_adapter('amqp://ptfkemyv:Uu7ANQ7FLFLXQwmpaaAZF5avBRgY1nLo@barnacle.rmq.cloudamqp.com/ptfkemyv', opts));
 // io.origins(['https://flujo.flujo.in']); /// THIS HEADER IS REQUIRED TO ALLOW ONLY OUR CLIENT
 
 let clients = {};
@@ -67,6 +67,8 @@ function onSocketConnection(socket) {
     let client_id = socket.handshake.query.client_id;
     const message = { status: true, data: 'socket connected successfully' };
     socket.emit('connection', message);
+
+    socket.on('update_client_sockets', (userData) => { updateClinetSockets(socket, userData) });
 
     socket.on('user_login', (userData) => { afterUserLogin(socket, userData) });
 
