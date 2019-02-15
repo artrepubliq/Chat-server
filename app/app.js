@@ -18,14 +18,19 @@ const frameguard = require('frameguard');
 var helmet = require('helmet')
 
 var corsOptions = {
-    origin: function (origin, callback) {
-      if (origin.includes("flujo.io") || origin.includes("localhost")) {
+  origin: function (origin, callback) {
+    try {
+      if (origin.includes("flujo.io") || origin.includes("localhost") || origin.includes("appknox")) {
         callback(null, true)
       } else {
         callback(new Error('Not allowed by CORS'))
       }
     }
+    catch (e) {
+      callback(null, false)
+    }
   }
+}
   app.options(cors(corsOptions));
   app.use(cors(corsOptions));
 app.use(frameguard({ action: 'deny' }))
@@ -84,9 +89,11 @@ function onSocketConnection(socket) {
     const message = { status: true, data: 'socket connected successfully' };
     socket.emit('connection', message);
 
+    socket.on('update_client_sockets', (userData) => { updateClinetSockets(socket, userData) });
+
     socket.on('user_login', (userData) => { afterUserLogin(socket, userData) });
 
-    socket.on('emit_change_loggedin_user_status', (userStatus) => {changeLoginUserStatus(socket, userStatus)});
+    socket.on('emit_change_loggedin_user_status', (userStatus) => { changeLoginUserStatus(socket, userStatus) });
 
     socket.on('user_typing_emit', (userData) => {
         userTyping(socket, userData, client_id);
@@ -311,7 +318,7 @@ deleteOldMessages = async (socket, messageObject) => {
             console.log(error);
         }
     } else {
-        console.log(messageObject,299);
+        console.log(messageObject, 299);
         // update query has to be here.
         messageObject['deleted_by'] = messageObject.deleted_from;
         const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
@@ -352,7 +359,7 @@ updateSenderOldMsgEmit = async (socket, messageObject) => {
 
 changeUserProfilePic = (socket, userObject) => {
     let client_id = socket.handshake.query.client_id;
-    io.of('privatechat').to(client_id).emit('change_user_profile_pic_listener', userObject );
+    io.of('privatechat').to(client_id).emit('change_user_profile_pic_listener', userObject);
 }
 
 /********************************* SOCKET R&D ************************************/
