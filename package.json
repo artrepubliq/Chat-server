@@ -20,6 +20,7 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "frameguard": "^3.0.0",
+    "helmet": "^3.15.1",
     "jsonwebtoken": "^8.4.0",
     "moment": "^2.22.2",
     "mongoose": "^5.2.17",
