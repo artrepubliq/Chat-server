@@ -74,10 +74,10 @@ const privatechat = io.of('privatechat').on('connection', socketConnection => {
     /** THIS A MIDDLE WHICH EXECUTES ON BEHALF OF EVERY SOCKET EVENT EXECUTION */
     // socketConnection.use((UCObj, next) => {
     //     if (UCObj[0] === 'user_login' && UCObj[1].user_id) { 
-    //         console.log('inside if' ,  UCObj[1].user_id);
+    //         // console.log('inside if' ,  UCObj[1].user_id);
     //         return next(); 
     //     }
-    //     console.log(UCObj);
+    //     // console.log(UCObj);
     //     next(new Error('Not a doge error'));
     //   });
 
@@ -131,7 +131,7 @@ userTyping = async (socket, userData, client_id) => {
         }
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
     }
 }
 
@@ -164,7 +164,7 @@ updateClients = (client_id, user_socket) => {
  * @param user_login
  */
 const afterUserLogin = (socket, userData) => {
-    console.log(`private chat users/sockets connected : ${Object.keys(io.sockets.connected).length}`);
+    // console.log(`private chat users/sockets connected : ${Object.keys(io.sockets.connected).length}`);
     let users = {};
     if (socket.handshake.query.client_id) {
         let client_id = socket.handshake.query.client_id;
@@ -223,7 +223,7 @@ sendNewMessage = async (socket, messageData) => {
         }
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
     }
 }
 
@@ -247,7 +247,7 @@ messageReadConfirm = async (socket, messageData) => {
         }
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
     }
 }
 // messageReceivedConfirm = async (socket, messageData) => {
@@ -308,17 +308,17 @@ disconnectPrivateChatSocket = (socket, socketData) => {
 deleteOldMessages = async (socket, messageObject) => {
     let client_id = socket.handshake.query.client_id;
     if (messageObject.deleteForBoth) {
-        console.log(messageObject, 289)
+        // console.log(messageObject, 289)
         try {
             messageObject['deleted_by'] = '0';
             const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
             clients[client_id][messageObject.sender_socket_key].emit('delete_old_message_succes_listener', messageObject);
             // clients[client_id][messageObject.receiver_socket_key].emit('delete_old_message_listener_for_receiver', messageObject);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     } else {
-        console.log(messageObject, 299);
+        // console.log(messageObject, 299);
         // update query has to be here.
         messageObject['deleted_by'] = messageObject.deleted_from;
         const result = await conversationSocketController.delete_message_by_message_id(messageObject, client_id)
@@ -364,7 +364,7 @@ changeUserProfilePic = (socket, userObject) => {
 
 /********************************* SOCKET R&D ************************************/
 newUser = (socket, data) => {
-    console.log(data);
+    // console.log(data);
     if (data in users) {
         return;
     } else {
@@ -394,7 +394,7 @@ disConnect = (socket, data) => {
 
 // io.of('groupchat').on('connection', (socket) => {
 //     socket.on('join', data => {
-//         console.log(`join room invoked`);
+//         // console.log(`join room invoked`);
 //         socket.join(data.room);
 //         socket.emit('rooms', `A new user has joined the room ${data.room}`);
 //     });
@@ -405,5 +405,5 @@ app.use(handleErrors.handle404Error);
 app.use(handleErrors.handleError);
 const port = process.env.PORT || 3040;
 server.listen(port, () => {
-    console.log(`Im listening on ${process.env.NODE_ENV} environment with port ${server.address().port}`);
+    // console.log(`Im listening on ${process.env.NODE_ENV} environment with port ${server.address().port}`);
 });

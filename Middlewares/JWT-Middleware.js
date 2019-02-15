@@ -6,7 +6,7 @@ const verifyJWT_MW = (req, res, next) => {
     verifyJWTToken.verifyJWTToken(token)
         .then((decodedToken) => {
             req.JWT_TOKEN = decodedToken.data
-            console.log(decodedToken.data);
+            // console.log(decodedToken.data);
             next()
         })
         .catch((err) => {

@@ -8,7 +8,7 @@ AWS.config.update({
 });
 
 const s3 = new AWS.S3({});
-console.log("Reached AWS...");
+// console.log("Reached AWS...");
 
 const AWSUpload = multer({
       storage: multerS3({

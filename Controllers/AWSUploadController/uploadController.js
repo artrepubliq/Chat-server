@@ -5,13 +5,13 @@ const path = require('path');
 
 const uploadFileController = (req, res)=> {
     if(res){
-        console.log("Request goes here.....")
+        // console.log("Request goes here.....")
         const result = JSON.stringify(req.files);
-        // console.log(result);
+        // // console.log(result);
         res.send(result);
     }
     else{ 
-        console.log("Error occurred");
+        // console.log("Error occurred");
     }
 }
 

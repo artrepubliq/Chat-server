@@ -7,7 +7,7 @@
  * handles internal server errors
  */
 exports.handleError = (err, req, res, next) => {
-    console.log(err, 10)
+    // console.log(err, 10)
     res.status(500).send({ status: false, error: err });
 }
 /**
@@ -30,7 +30,7 @@ exports.responeseTime = (req, res, next) => {
     const localTime = new Date().getTime();
     next();
     res.on('finish', () => {
-        console.log(`${req.method} ${req.originalUrl} ${(new Date().getTime() - localTime) / 1000} --sec`);
-        console.log('----------------------------------------------------------')
+        // console.log(`${req.method} ${req.originalUrl} ${(new Date().getTime() - localTime) / 1000} --sec`);
+        // console.log('----------------------------------------------------------')
     });
 }

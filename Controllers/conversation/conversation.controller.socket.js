@@ -24,7 +24,7 @@ const conversationSocketController = {
                 return insert_message;
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     },
     /**
@@ -40,7 +40,7 @@ const conversationSocketController = {
 
             return result;
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     },
 
@@ -50,7 +50,7 @@ const conversationSocketController = {
     delete_message_by_message_id: async (deleteMessageObject) => {
         const { _id, deleted_from, deleted_to, status, deleted_by } = deleteMessageObject;
         let result;
-        console.log(deleteMessageObject);
+        // console.log(deleteMessageObject);
         try {
             const message = await chat_thread_model.find({
                 $and: [
@@ -70,7 +70,7 @@ const conversationSocketController = {
             }
             return result;
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     },
 
@@ -86,7 +86,7 @@ const conversationSocketController = {
             );
             return result;
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 

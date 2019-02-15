@@ -11,11 +11,11 @@ const conversationApiController = {
 
         // sender_id is the ID of the currently loggedIn user
         // receiverID is the ID of the user with whom the currently loggedIn user is talking to
-        console.log("JSON WebToken ###", process.env.JWT_KEY)
+        // console.log("JSON WebToken ###", process.env.JWT_KEY)
         try {
             if (req.headers.authorization) {
                 const verfyJwt = jwt.verify(req.headers.authorization, process.env.JWT_KEY);
-                console.log(verfyJwt, 'verfyJwt');
+                // console.log(verfyJwt, 'verfyJwt');
                 const sender_id = verfyJwt.user_id;
                 const client_id = verfyJwt.client_id;
                 if (!client_id || !sender_id || !receiver_id || !created_time) {
@@ -158,17 +158,17 @@ const conversationApiController = {
      * GET UN-READ CONVERSATIONS BY USERID
      */
      getUnReadMessagesByUserId: async (req, res, next) => {
-        console.log(req.body);
+        // console.log(req.body);
         // receiver_id is the ID of the currently loggedIn user
 
         try {
             if (req.headers.authorization) {
                 const verfyJwt = jwt.verify(req.headers.authorization, process.env.JWT_KEY);
-                console.log(verfyJwt, 'verfyJwt');
+                // console.log(verfyJwt, 'verfyJwt');
                 const client_id = verfyJwt.client_id;
                 const receiver_id = verfyJwt.user_id;
-                console.log(client_id);
-                console.log(receiver_id);
+                // console.log(client_id);
+                // console.log(receiver_id);
                 if (!client_id || !receiver_id) {
                     res.send({ error: false, result: 'Required Parameters are missing!!!' });
                 } else {
