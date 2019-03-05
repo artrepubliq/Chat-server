@@ -32,3 +32,651 @@ npm ERR! This is probably not a problem with npm. There is likely additional log
 
 npm ERR! A complete log of this run can be found in:
 npm ERR!     /home/ubuntu/.npm/_logs/2019-03-05T13_39_20_929Z-debug.log
+Reached AWS...
+Im listening on production environment with port 3040
+
+> f-chat@1.0.0 start /home/ubuntu/flujo/Chat-server
+> cross-env NODE_ENV=production node ./app/app.js
+
+Reached AWS...
+Im listening on production environment with port 3040
+private chat users/sockets connected : 4
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:03:52.093Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551801832,
+  exp: 1551845032 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.028 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:03:52.093Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551801832,
+  exp: 1551845032 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 2
+private chat users/sockets connected : 2
+{ client_id: '11131', receiver_id: '291' }
+{ aud: 'https://flujo.io',
+  username: 'Kr',
+  workspace_id: 'keerthan.flujo.io',
+  datetime: '2019-03-05T15:15:14.706Z',
+  email: 'keerthan@keerthan.com',
+  client_id: '11131',
+  user_id: 291,
+  status: 'admin',
+  iat: 1551798914,
+  exp: 1551842114 } 'verfyJwt'
+11131
+291
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 3
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:03:52.093Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551801832,
+  exp: 1551845032 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+{ client_id: '11131', receiver_id: '291' }
+{ aud: 'https://flujo.io',
+  username: 'Kr',
+  workspace_id: 'keerthan.flujo.io',
+  datetime: '2019-03-05T15:15:14.706Z',
+  email: 'keerthan@keerthan.com',
+  client_id: '11131',
+  user_id: 291,
+  status: 'admin',
+  iat: 1551798914,
+  exp: 1551842114 } 'verfyJwt'
+11131
+291
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:03:52.093Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551801832,
+  exp: 1551845032 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+{ client_id: '11131', receiver_id: '291' }
+{ aud: 'https://flujo.io',
+  username: 'Kr',
+  workspace_id: 'keerthan.flujo.io',
+  datetime: '2019-03-05T15:15:14.706Z',
+  email: 'keerthan@keerthan.com',
+  client_id: '11131',
+  user_id: 291,
+  status: 'admin',
+  iat: 1551798914,
+  exp: 1551842114 } 'verfyJwt'
+11131
+291
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+{ client_id: '11124', receiver_id: '275' }
+{ aud: 'https://flujo.io',
+  username: 'Aj',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:34:53.726Z',
+  email: 'ajay@flujo.io',
+  client_id: '11124',
+  user_id: 275,
+  status: 'team member',
+  iat: 1551803693,
+  exp: 1551846893 } 'verfyJwt'
+11124
+275
+POST /conversations/getunreadmessagesbyuserid 0.02 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 4
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:03:52.093Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551801832,
+  exp: 1551845032 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 2
+private chat users/sockets connected : 2
+private chat users/sockets connected : 2
+private chat users/sockets connected : 2
+private chat users/sockets connected : 2
+{ client_id: '11132', receiver_id: '292' }
+{ aud: 'https://flujo.io',
+  username: 'mahathe',
+  workspace_id: 'testSpace.flujo.io',
+  datetime: '2019-03-05T16:47:02.839Z',
+  email: 'mahathe@abc.com',
+  client_id: '11132',
+  user_id: 292,
+  status: 'admin',
+  iat: 1551804422,
+  exp: 1551847622 } 'verfyJwt'
+11132
+292
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 3
+{ client_id: '11132', receiver_id: '292' }
+{ aud: 'https://flujo.io',
+  username: 'mahathe',
+  workspace_id: 'testSpace.flujo.io',
+  datetime: '2019-03-05T16:47:02.839Z',
+  email: 'mahathe@abc.com',
+  client_id: '11132',
+  user_id: 292,
+  status: 'admin',
+  iat: 1551804422,
+  exp: 1551847622 } 'verfyJwt'
+11132
+292
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 2
+private chat users/sockets connected : 2
+private chat users/sockets connected : 2
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:03:52.093Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551801832,
+  exp: 1551845032 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+{ client_id: '11132', receiver_id: '292' }
+{ aud: 'https://flujo.io',
+  username: 'mahathe',
+  workspace_id: 'testspace.flujo.io',
+  datetime: '2019-03-05T17:03:49.289Z',
+  email: 'mahathe@abc.com',
+  client_id: '11132',
+  user_id: 292,
+  status: 'admin',
+  iat: 1551805429,
+  exp: 1551848629 } 'verfyJwt'
+11132
+292
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 4
+private chat users/sockets connected : 6
+private chat users/sockets connected : 5
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+{ client_id: '11124', receiver_id: '275' }
+{ aud: 'https://flujo.io',
+  username: 'Aj',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T17:08:27.400Z',
+  email: 'ajay@flujo.io',
+  client_id: '11124',
+  user_id: 275,
+  status: 'team member',
+  iat: 1551805707,
+  exp: 1551848907 } 'verfyJwt'
+11124
+275
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 7
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 5
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T17:09:51.490Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551805791,
+  exp: 1551848991 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.013 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+{ client_id: '11124', receiver_id: '275' }
+{ aud: 'https://flujo.io',
+  username: 'Aj',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T17:08:27.400Z',
+  email: 'ajay@flujo.io',
+  client_id: '11124',
+  user_id: 275,
+  status: 'team member',
+  iat: 1551805707,
+  exp: 1551848907 } 'verfyJwt'
+11124
+275
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 5
+private chat users/sockets connected : 6
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:03:52.093Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551801832,
+  exp: 1551845032 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.013 --sec
+----------------------------------------------------------
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T16:03:52.093Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551801832,
+  exp: 1551845032 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.014 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 5
+{ client_id: '11124', receiver_id: '271' }
+{ aud: 'https://flujo.io',
+  username: 'keerthan',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T17:11:59.821Z',
+  email: 'keerthan@flujo.io',
+  client_id: '11124',
+  user_id: 271,
+  status: 'team member',
+  iat: 1551805919,
+  exp: 1551849119 } 'verfyJwt'
+11124
+271
+POST /conversations/getunreadmessagesbyuserid 0.013 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+{ client_id: '11124', receiver_id: '275' }
+{ aud: 'https://flujo.io',
+  username: 'Aj',
+  workspace_id: 'flujo.flujo.io',
+  datetime: '2019-03-05T17:12:00.940Z',
+  email: 'ajay@flujo.io',
+  client_id: '11124',
+  user_id: 275,
+  status: 'team member',
+  iat: 1551805920,
+  exp: 1551849120 } 'verfyJwt'
+11124
+275
+POST /conversations/getunreadmessagesbyuserid 0.015 --sec
+----------------------------------------------------------
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 5
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 5
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 6
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 7
+private chat users/sockets connected : 5
+private chat users/sockets connected : 5
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 3
+private chat users/sockets connected : 3
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+private chat users/sockets connected : 4
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! f-chat@1.0.0 start: `cross-env NODE_ENV=production node ./app/app.js`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the f-chat@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/ubuntu/.npm/_logs/2019-03-05T17_21_48_903Z-debug.log
