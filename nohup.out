@@ -1,0 +1,34 @@
+
+> f-chat@1.0.0 start /home/ubuntu/flujo/Chat-server
+> cross-env NODE_ENV=production node ./app/app.js
+
+Reached AWS...
+events.js:183
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::3040
+    at Object._errnoException (util.js:992:11)
+    at _exceptionWithHostPort (util.js:1014:20)
+    at Server.setupListenHandle [as _listen2] (net.js:1355:14)
+    at listenInCluster (net.js:1396:12)
+    at Server.listen (net.js:1480:7)
+    at Object.<anonymous> (/home/ubuntu/flujo/Chat-server/app/app.js:405:8)
+    at Module._compile (module.js:652:30)
+    at Object.Module._extensions..js (module.js:663:10)
+    at Module.load (module.js:565:32)
+    at tryModuleLoad (module.js:505:12)
+    at Function.Module._load (module.js:497:3)
+    at Function.Module.runMain (module.js:693:10)
+    at startup (bootstrap_node.js:191:16)
+    at bootstrap_node.js:612:3
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! f-chat@1.0.0 start: `cross-env NODE_ENV=production node ./app/app.js`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the f-chat@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/ubuntu/.npm/_logs/2019-03-05T13_39_20_929Z-debug.log
